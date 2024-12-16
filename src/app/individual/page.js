@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
-import NavBar from '../componets/nav/nav';
+import NavBar from '../componets/nav/Nav';
 
 async function fetchData(movieId) {
   const movieResponse = await fetch('https://graphql-api-9d65.vercel.app/', {

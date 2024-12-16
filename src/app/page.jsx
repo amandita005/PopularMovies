@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import NavBar from './componets/nav/nav';
+import NavBar from './componets/nav/Nav';
 import ImageSlider from './componets/ImageSlider/ImageSlider';
 import Genres from './componets/genres/genres';
 
