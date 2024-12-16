@@ -60,29 +60,37 @@ const SearchPage = () => {
       setDataPopular([]);
     }
   };
-
+  const handleSearchClick = () => {
+    setIsSearching(true); 
+  };
   const handleBack = (): void => {
     router.push('/');
   };
+  useEffect(() => {
+    handleSearchClick (); 
+
+  }, []);
 
   const navigateToIndividual = (movieId: string) => {
     if (movieId) {
       router.push(`/individual`);
       localStorage.setItem('movieId', movieId);
-    }
+      console.log("p.1", movieId)    }
   };
 // 'w-[90%] sm:w-[80%] md:w-[60%] lg:w-[25%]'
   return (
     <div className='bg-black'>
       <nav className="flex items-center p-3 absolute top-0 left-0 w-full h-16 bg-transparent z-50 mt-3">
         <div className="flex ml-6">
-          <FaArrowLeft
-            className="text-white text-2xl mr-2 cursor-pointer"
-            onClick={handleBack}
-          />
+        <p
+            className="text-white text-lg font-medium hover:text-gray-400 ml-2 cursor-pointer mt-2 mr-2"
+            onClick={() => handleBack()}
+          >
+              <FaArrowLeft className="text-white text-2xl mr-2" />
+          </p>
         </div>
         <div className="flex items-center mr-8 w-[80%]">
-          <div className={`w-[90%] transition-all duration-700 flex items-center ${isSearching ? 'translate-x-0' : 'translate-x-full'}`}>
+          <div className={`w-[90%] transition-all duration-700 ease-in-outflex items-center ${isSearching ? 'translate-x-0' : 'translate-x-full'}`}>
             <input
               type="text"
               value={searchText}
