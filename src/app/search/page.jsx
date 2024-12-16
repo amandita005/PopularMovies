@@ -64,7 +64,16 @@ const SearchPage = () => {
   };
   useEffect(() => {
     handleSearchClick (); 
+
   }, []);
+
+  const navigateToIndividual = (movieId) => {
+    if (movieId) {
+      router.push(`/individual`);
+      localStorage.setItem('movieId', movieId);
+      console.log("p.1", movieId)
+    }
+  };
 
 // 'w-[90%] sm:w-[80%] md:w-[60%] lg:w-[25%]'
 
@@ -115,14 +124,14 @@ const SearchPage = () => {
     {filteredBens.length > 0 ? (
       <div
         className={`grid ${
-          filteredBens.length > 5 ? "lg:grid-cols-5" : "lg:grid-cols-4"
+          filteredBens.length > 5 ? "lg:grid-cols-5" : "lg:grid-cols-5"
         } sm:grid-cols-2 grid-cols-2 gap-4`}
       >
         {filteredBens.map((movie) => (
           <div
             key={movie.id}
             className="rounded shadow-lg cursor-pointer p-1"
-            onClick={() => router.push(`/individual?id=${movie.id}`)}
+            onClick={() => navigateToIndividual(movie.id)}
           >
          <img
   className="w-full h-[30vh] sm:h-[50vh] object-cover shadow-md shadow-white hover:shadow-lg hover:shadow-[0_5px_5px_rgba(0,0,0,0.9)] transition-shadow transition-transform duration-300 ease-in-out hover:scale-105"

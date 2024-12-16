@@ -72,7 +72,9 @@ const Genres = () => {
 
   const navigateToIndividual = (movieId) => {
     if (movieId) {
-      router.push(`/individual?id=${movieId}`);
+      router.push(`/individual`);
+      localStorage.setItem('movieId', movieId);
+      console.log("p.1", movieId)
     }
   };
 

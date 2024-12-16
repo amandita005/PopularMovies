@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import NavBar from '../componets/nav/Nav';
+import { useRouter } from 'next/navigation';
 
 async function fetchData(movieId) {
   const movieResponse = await fetch('https://graphql-api-9d65.vercel.app/', {
@@ -56,8 +57,12 @@ async function fetchData(movieId) {
 }
 
 export default function Individual() {
-  const searchParams = useSearchParams();
-  const id = searchParams.get('id');
+
+const router = useRouter();
+
+const id = localStorage.getItem('movieId');
+console.log("p.2", id)
+
 
   const [data, setData] = useState(null);
   const [rec, setRec] = useState(null);
@@ -97,7 +102,11 @@ export default function Individual() {
   };
 
   const navigateToIndividual = (movieId) => {
-    window.location.href = `/individual?id=${movieId}`;
+    if (movieId) {
+      router.push(`/individual`);
+      localStorage.setItem('movieId', movieId);
+      console.log("p.1", movieId)
+    }
   };
 
   return (

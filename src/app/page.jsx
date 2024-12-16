@@ -17,6 +17,14 @@ const HomePage = () => {
     fetchPopularMovie(); // Faz o fetch dos filmes populares ao carregar a página
   }, []);
 
+  const navigateToIndividual = (movieId) => {
+    if (movieId) {
+      router.push(`/individual`);
+      localStorage.setItem('movieId', movieId);
+      console.log("p.1", movieId)
+    }
+  };
+
   const fetchPopularMovie = async () => {
     console.log("Fetching popular movies...");
 
@@ -83,7 +91,7 @@ const HomePage = () => {
                 <div
                   className="inline-block rounded shadow-lg w-48 flex-shrink-0 cursor-pointer p-1"
                   key={movie.id}
-                  onClick={() => router.push(`/individual?id=${movie.id}`)} // Redireciona para a página do filme
+                  onClick={() => navigateToIndividual(movie.id)}
                 >
                   <img
                     className="w-full h-72 object-cover shadow-md shadow-white hover:shadow-[0_5px_5px_rgba(0,0,0,0.9)] transition-shadow transition-transform duration-300 ease-in-out hover:scale-105"
