@@ -3,12 +3,27 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 
-const Genres = () => {
-  const [actionMovies, setActionMovies] = useState([]);
-  const [comedyMovies, setComedyMovies] = useState([]);
-  const [musicalMovies, setMusicalMovies] = useState([]);  
-  const [fictionMovies, setFictionMovies] = useState([]);
-  const [error, setError] = useState(null);  
+// Interface para representar os dados de um filme
+interface Movie {
+  id: string;
+  title: string;
+  overview: string;
+  release_date: string;
+  poster_path: string | null;
+}
+
+// Props para o componente Carousel
+interface CarouselProps {
+  title: string;
+  movies: Movie[];
+}
+
+const Genres: React.FC = () => {
+  const [actionMovies, setActionMovies] = useState<Movie[]>([]);
+  const [comedyMovies, setComedyMovies] = useState<Movie[]>([]);
+  const [musicalMovies, setMusicalMovies] = useState<Movie[]>([]);
+  const [fictionMovies, setFictionMovies] = useState<Movie[]>([]);
+  const [error, setError] = useState(null);
 
   const router = useRouter();
 
@@ -17,7 +32,7 @@ const Genres = () => {
   }, []);
 
   const fetchMoviesByCategory = async () => {
-    const fetchCategory = async (genre) => {
+    const fetchCategory = async (genre: string) => {
       try {
         const response = await fetch('https://graphql-api-9d65.vercel.app/', {
           method: 'POST',
@@ -37,71 +52,66 @@ const Genres = () => {
             variables: { genre },
           }),
         });
-  
 
         if (!response.ok) {
           throw new Error(`Erro ao buscar filmes da categoria ${genre}`);
         }
-  
+
         const data = await response.json();
         return data?.data?.MoviesGenres || [];
-      } catch (error) {
+      } catch (error){
         console.error('Erro ao buscar filmes:', error);
-        setError(`Erro ao buscar filmes: ${error.message}`);
+        throw new Error(`Dados inválidos recebidos para a categoria ${genre}`);
         return [];
       }
     };
-  
+
     try {
-      const [acton, comedy, musical, fiction] = await Promise.all([
-        fetchCategory('14'), 
-        fetchCategory('35'), 
-        fetchCategory('10402'), 
-        fetchCategory('878'), 
+      const [action, comedy, musical, fiction] = await Promise.all([
+        fetchCategory('14'),
+        fetchCategory('35'),
+        fetchCategory('10402'),
+        fetchCategory('878'),
       ]);
-  
-      setActionMovies(acton);
+
+      setActionMovies(action);
       setComedyMovies(comedy);
       setMusicalMovies(musical);
       setFictionMovies(fiction);
-    } catch (error) {
-      setError('Erro ao buscar categorias de filmes');
+    } catch (error){
+      throw new Error(`Dados inválidos recebidos `);
     }
   };
-  
 
-  const navigateToIndividual = (movieId) => {
+  const navigateToIndividual = (movieId: string) => {
     if (movieId) {
       router.push(`/individual`);
       localStorage.setItem('movieId', movieId);
-      console.log("p.1", movieId)
+      console.log('p.1', movieId);
     }
   };
 
-  // Carrossel reutilizável
-  const CarouselWithArrows = ({ title, movies }) => {
-    const carouselRef = useRef(null);
+  const CarouselWithArrows: React.FC<CarouselProps> = ({ title, movies }) => {
+    const carouselRef = useRef<HTMLDivElement | null>(null);
 
     const scrollLeft = () => {
-      carouselRef.current.scrollBy({ left: -260, behavior: 'smooth' });
+      carouselRef.current?.scrollBy({ left: -260, behavior: 'smooth' });
     };
 
     const scrollRight = () => {
-      carouselRef.current.scrollBy({ left: 260, behavior: 'smooth' });
+      carouselRef.current?.scrollBy({ left: 260, behavior: 'smooth' });
     };
 
     return (
       <div className="bg-black">
         <div className="relative p-4">
           <div className="flex items-center">
-            <h2 className="text-white text-1xl font-bold ml-4 mr-4">
-              {title || 'Category'}
-            </h2>
+            <h2 className="text-white text-1xl font-bold ml-4 mr-4">{title || 'Category'}</h2>
             <div className="flex-1 h-[2px] bg-gray-800 mr-4"></div>
           </div>
           <button
             onClick={scrollLeft}
-            className="absolute border-r-2 border-white left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-2xl z-10 border-white b-r-2"
+            className="absolute border-r-2 border-white left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-2xl z-10"
           >
             ◀
           </button>
@@ -121,7 +131,7 @@ const Genres = () => {
                     src={
                       movie?.poster_path
                         ? `https://image.tmdb.org/t/p/w500${movie?.poster_path}`
-                        : '/fallback-image.jpg'  
+                        : '/fallback-image.jpg'
                     }
                     alt={movie?.title || 'Imagem do filme'}
                   />
@@ -142,8 +152,7 @@ const Genres = () => {
 
   return (
     <div className="bg-gradient-to-b from-[#2927b0] to-[#000000] via-[#000000]">
-      {error && <div className="text-red-500 text-center">{error}</div>} 
-
+      {error && <div className="text-red-500 text-center">{error}</div>}
       <CarouselWithArrows title="Filmes de ação" movies={actionMovies} />
       <CarouselWithArrows title="Filmes de comédia" movies={comedyMovies} />
       <CarouselWithArrows title="Filmes musicais" movies={musicalMovies} />

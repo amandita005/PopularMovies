@@ -5,7 +5,16 @@ import { useEffect, useState, useRef } from 'react';
 import NavBar from '../componets/nav/Nav';
 import { useRouter } from 'next/navigation';
 
-async function fetchData(movieId) {
+type Movie = {
+  id: string;
+  title: string;
+  overview: string;
+  release_date: string;
+  poster_path: string;
+  director: string;
+};
+
+async function fetchData(movieId: string) {
   const movieResponse = await fetch('https://graphql-api-9d65.vercel.app/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -55,14 +64,15 @@ async function fetchData(movieId) {
     recommendations: recommendationsData?.data?.moviesRecomendations,
   };
 }
+
 export default function Individual() {
   const router = useRouter();
 
-  const [id, setId] = useState(null);
-  const [data, setData] = useState(null);
-  const [rec, setRec] = useState(null);
+  const [id, setId] = useState<string | null>(null);
+  const [data, setData] = useState<Movie | null>(null);
+  const [rec, setRec] = useState<Movie[] | null>(null);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const carouselRef = useRef(null);
+  const carouselRef = useRef<HTMLDivElement | null>(null);
 
   // Detectar tela pequena
   useEffect(() => {
@@ -81,9 +91,7 @@ export default function Individual() {
       setId(storedId);
     }
   }, []);
-  
 
- 
   useEffect(() => {
     async function loadData() {
       if (id) {
@@ -92,45 +100,29 @@ export default function Individual() {
         setRec(recommendations);
       }
     }
-    loadData();
-  }, [id]); 
-
-  
-  useEffect(() => {
-    async function loadData() {
-      if (id) {
-        const { movieData, recommendations } = await fetchData(id);
-        setData(movieData);
-        setRec(recommendations);
-      }
-    }
-
     loadData();
   }, [id]);
 
   if (!data || !rec) return <p>Loading data...</p>;
 
   const scrollLeft = () => {
-    carouselRef.current.scrollBy({ left: -260, behavior: 'smooth' });
+    carouselRef.current?.scrollBy({ left: -260, behavior: 'smooth' });
   };
 
   const scrollRight = () => {
-    carouselRef.current.scrollBy({ left: 260, behavior: 'smooth' });
+    carouselRef.current?.scrollBy({ left: 260, behavior: 'smooth' });
   };
 
-  const navigateToIndividual = (movieId) => {
+  const navigateToIndividual = (movieId: string) => {
     if (movieId) {
       localStorage.setItem('movieId', movieId);
-      setId(movieId); 
+      setId(movieId);
     }
   };
-  
 
   return (
     <div>
       <NavBar />
-
-    
       <div
         className="relative w-full h-screen bg-cover bg-center"
         style={{ backgroundImage: `url(https://image.tmdb.org/t/p/w500${data.poster_path})` }}
@@ -162,7 +154,6 @@ export default function Individual() {
         </div>
       </div>
 
-      {/* Filmes relacionados */}
       <div className="relative bg-black pb-8 p-4">
         <div className="flex items-center pt-6 pb-2">
           <h2 className="text-white text-1xl font-bold ml-4 mr-4">Filmes Relacionados</h2>
@@ -203,7 +194,7 @@ export default function Individual() {
 
         <button
           onClick={scrollRight}
-          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10"
+          className=" border-l-2 border-white absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full z-10"
         >
           ▶
         </button>

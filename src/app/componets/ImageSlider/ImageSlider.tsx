@@ -3,9 +3,19 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
+interface Movie {
+  id: string;
+  title: string;
+  overview: string;
+  release_date: string;
+  poster_path: string;
+}
+
 export default function ImageSlider() {
-  const [dataPopular, setDataPopular] = useState([]);
+  const [dataPopular, setDataPopular] = useState<Movie[]>([]);
   const [positionIndex, setPositionIndex] = useState([0, 1, 2, 3, 4]);
+
+
 
   useEffect(() => {
     const interval = setInterval(() => {
