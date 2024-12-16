@@ -30,8 +30,7 @@ Clone o repositório no seu computador local usando Git:
 
 - Passo 3: Rodar o Servidor 
 
- Usando pnpm:
-    pnpm dev
+    "pnpm dev"
 
 O servidor estará rodando em [http://localhost:3000](http://localhost:3000).
 
