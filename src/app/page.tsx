@@ -15,13 +15,13 @@ interface Movie {
 }
 
 const HomePage = () => {
-  const [dataPopular, setDataPopular] = useState<Movie[]>([]); // Definição explícita de tipo
-  const [searchText, setSearchText] = useState<string>(''); // Texto da busca
+  const [dataPopular, setDataPopular] = useState<Movie[]>([]);
+  const [searchText, setSearchText] = useState<string>(''); 
   const router = useRouter();
-  const carouselRef = useRef<HTMLDivElement | null>(null); // Referência do carrossel
+  const carouselRef = useRef<HTMLDivElement | null>(null); 
 
   useEffect(() => {
-    fetchPopularMovies(); // Chama a função para buscar os filmes populares
+    fetchPopularMovies(); 
   }, []);
 
   const fetchPopularMovies = async () => {
@@ -45,17 +45,17 @@ const HomePage = () => {
       });
 
       const data = await response.json();
-      setDataPopular(data?.data?.popularMovies || []); // Garantir que a resposta tenha dados
+      setDataPopular(data?.data?.popularMovies || []); 
     } catch (error) {
       console.error('Erro ao buscar filmes populares:', error);
-      setDataPopular([]); // Caso ocorra erro, a lista de filmes ficará vazia
+      setDataPopular([]); 
     }
   };
 
   const navigateToIndividual = (movieId: string) => {
     if (movieId) {
       router.push(`/individual`);
-      localStorage.setItem('movieId', movieId); // Armazenar ID do filme no localStorage
+      localStorage.setItem('movieId', movieId); 
     }
   };
 
@@ -99,10 +99,14 @@ const HomePage = () => {
                   className="inline-block rounded shadow-lg w-48 flex-shrink-0 cursor-pointer p-1"
                   onClick={() => navigateToIndividual(movie.id)}
                 >
-                  <img
+                    <img
                     className="w-full h-72 object-cover shadow-md shadow-white hover:shadow-[0_5px_5px_rgba(0,0,0,0.9)] transition-shadow transition-transform duration-300 ease-in-out hover:scale-105"
-                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                    alt={movie.title}
+                    src={
+                      movie?.poster_path
+                        ? `https://image.tmdb.org/t/p/w500${movie?.poster_path}`
+                        : 'fallback-image.jpg'
+                    }
+                    alt={movie?.title}
                   />
                 </div>
               ))}
