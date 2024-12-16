@@ -96,7 +96,7 @@ const SearchPage = () => {
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               placeholder="Buscar..."
-              className="w-[43vh] p-2 rounded border border-white bg-transparent text-white focus:outline-none"
+              className="w-[33vh] p-2 rounded border border-white bg-transparent text-white focus:outline-none"
             />
           </div>
           {!isSearching && (
