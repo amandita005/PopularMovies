@@ -55,20 +55,16 @@ async function fetchData(movieId) {
     recommendations: recommendationsData?.data?.moviesRecomendations,
   };
 }
-
 export default function Individual() {
+  const router = useRouter();
 
-const router = useRouter();
-
-const id = localStorage.getItem('movieId');
-console.log("p.2", id)
-
-
+  const [id, setId] = useState(null);
   const [data, setData] = useState(null);
   const [rec, setRec] = useState(null);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const carouselRef = useRef(null);
 
+  // Detectar tela pequena
   useEffect(() => {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth < 768);
@@ -79,6 +75,27 @@ console.log("p.2", id)
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedId = localStorage.getItem('movieId');
+      setId(storedId);
+    }
+  }, []);
+  
+
+ 
+  useEffect(() => {
+    async function loadData() {
+      if (id) {
+        const { movieData, recommendations } = await fetchData(id);
+        setData(movieData);
+        setRec(recommendations);
+      }
+    }
+    loadData();
+  }, [id]); 
+
+  
   useEffect(() => {
     async function loadData() {
       if (id) {
@@ -103,22 +120,22 @@ console.log("p.2", id)
 
   const navigateToIndividual = (movieId) => {
     if (movieId) {
-      router.push(`/individual`);
       localStorage.setItem('movieId', movieId);
-      console.log("p.1", movieId)
+      setId(movieId); 
     }
   };
+  
 
   return (
     <div>
       <NavBar />
+
     
       <div
         className="relative w-full h-screen bg-cover bg-center"
         style={{ backgroundImage: `url(https://image.tmdb.org/t/p/w500${data.poster_path})` }}
       >
         <div className="absolute inset-0 bg-black opacity-50"></div>
-
         <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center h-full px-4 lg:px-16 text-white pt-10">
           <div className="hidden lg:block lg:w-1/2 flex justify-end items-center mb-6 lg:mb-0">
             <img
@@ -127,7 +144,6 @@ console.log("p.2", id)
               className="pl-10 max-w-full h-auto lg:max-w-[60%] rounded shadow-lg ml-auto mr-auto"
             />
           </div>
-
           <div className="lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left p-4">
             <h1 className="text-3xl lg:text-6xl font-bold mb-4">{data.title}</h1>
             <p className="text-lg lg:text-xl mb-6 text-justify">{data.overview}</p>
@@ -141,13 +157,12 @@ console.log("p.2", id)
                 <span className="font-bold text-lg">Diretor:</span>
                 <span className="text-lg text-gray-300">{data.director || "Diretor desconhecido"}</span>
               </div>
-             
             </div>
           </div>
         </div>
       </div>
 
-  
+      {/* Filmes relacionados */}
       <div className="relative bg-black pb-8 p-4">
         <div className="flex items-center pt-6 pb-2">
           <h2 className="text-white text-1xl font-bold ml-4 mr-4">Filmes Relacionados</h2>
